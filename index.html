@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlowLogic — Штучний інтелект та автоматизація бізнес-процесів</title>
+    <!-- Підключення шрифтів Google Fonts: Inter Tight, Inter та JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        /* CSS Змінні: Палітра Cyber Slate */
+        :root {
+            --bg-dark: #0B0F19;          /* Базовий темний */
+            --bg-dark-card: #131B2E;     /* Картки на темному фоні */
+            --bg-light: #F3F4F6;         /* Нейтральний світлий */
+            --text-dark: #111827;        /* Текстовий насичений вугільний */
+            --text-light: #F9FAFB;       /* Світлий текст для темних секцій */
+            --text-muted: #9CA3AF;       /* Приглушений текст */
+            --accent-primary: #2563EB;   /* Акцентний ультрамариновий синій */
+            --accent-hover: #1D4ED8;     /* Акцентний при наведенні */
+            --accent-cyan: #38BDF8;      /* Функціональний контраст (електрик) */
+            
+            --font-heading: 'Inter Tight', 'Inter', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --container-width: 1200px;
+        }
+
+        /* Скидання стилів та базові налаштування */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+        }
+
+        body {
+            font-family: var(--font-body);
+            color: var(--text-dark);
+            background-color: var(--bg-light);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: var(--transition);
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        .container {
+            max-width: var(--container-width);
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Технічні бейджі */
+        .tech-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--accent-cyan);
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid rgba(56, 189, 248, 0.25);
+            padding: 6px 14px;
+            border-radius: 999px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .tech-tag.dark-tag {
+            color: var(--accent-primary);
+            background: rgba(37, 99, 235, 0.1);
+            border-color: rgba(37, 99, 235, 0.25);
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent-cyan);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--accent-cyan);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.15); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.8; }
+        }
+
+        /* Навігаційна панель (Sticky Header) */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(11, 15, 25, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            transition: var(--transition);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 80px;
+        }
+
+        .logo {
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-cyan));
+            border-radius: 8px;
+            display: grid;
+            place-items: center;
+            font-family: var(--font-mono);
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--bg-dark);
+        }
+
+        .logo span {
+            color: var(--accent-cyan);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 36px;
+        }
+
+        .nav-links a {
+            color: #D1D5DB;
+            font-size: 0.95rem;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--accent-cyan);
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover {
+            color: var(--text-light);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-cta {
+            background-color: var(--accent-primary);
+            color: #FFFFFF !important;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+        }
+
+        .nav-cta::after {
+            display: none !important;
+        }
+
+        .nav-cta:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
+        }
+
+        /* Мобільна кнопка меню */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-light);
+            font-size: 1.6rem;
+            cursor: pointer;
+        }
+
+        /* Головний розділ (Hero Section) */
+        .hero {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            padding: 170px 0 110px;
+            position: relative;
+            overflow: hidden;
+            background-image: 
+                radial-gradient(circle at 80% 20%, rgba(37, 99, 235, 0.18) 0%, transparent 45%),
+                radial-gradient(circle at 20% 80%, rgba(56, 189, 248, 0.12) 0%, transparent 40%),
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.15fr 0.85fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .hero-title {
+            font-size: clamp(2.4rem, 5vw, 3.8rem);
+            margin-bottom: 24px;
+            color: #FFFFFF;
+        }
+
+        .hero-title .highlight {
+            background: linear-gradient(90deg, #FFFFFF 0%, var(--accent-cyan) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 1.15rem;
+            color: var(--text-muted);
+            margin-bottom: 36px;
+            max-width: 580px;
+            font-weight: 400;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background-color: var(--accent-primary);
+            color: #FFFFFF;
+            padding: 16px 32px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1rem;
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: var(--transition);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(56, 189, 248, 0.35);
+        }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-light);
+            padding: 16px 28px;
+            border-radius: 10px;
+            font-weight: 500;
+            font-size: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+        }
+
+        /* Інтерактивна картка метрик в Hero */
+        .hero-visual {
+            background: rgba(19, 27, 46, 0.75);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            transition: var(--transition);
+        }
+
+        .hero-visual:hover {
+            transform: translateY(-6px);
+            border-color: var(--accent-cyan);
+            box-shadow: 0 25px 60px -12px rgba(37, 99, 235, 0.25);
+        }
+
+        .terminal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 16px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .terminal-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .terminal-dots span {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .terminal-dots span:nth-child(1) { background: #EF4444; }
+        .terminal-dots span:nth-child(2) { background: #F59E0B; }
+        .terminal-dots span:nth-child(3) { background: #10B981; }
+
+        .metric-row {
+            margin-bottom: 18px;
+        }
+
+        .metric-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            color: #E5E7EB;
+        }
+
+        .metric-label strong {
+            font-family: var(--font-mono);
+            color: var(--accent-cyan);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 99px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-cyan));
+            border-radius: 99px;
+        }
+
+        .code-snippet {
+            margin-top: 24px;
+            background: rgba(11, 15, 25, 0.9);
+            padding: 14px;
+            border-radius: 8px;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: #A5B4FC;
+            border-left: 3px solid var(--accent-cyan);
+        }
+
+        /* Розділ "Про нас" (About Section) */
+        .about {
+            padding: 100px 0;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+        }
+
+        .section-header {
+            margin-bottom: 56px;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 3.5vw, 2.75rem);
+            color: var(--text-dark);
+            margin-bottom: 16px;
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 56px;
+            align-items: center;
+        }
+
+        .about-story p {
+            font-size: 1.05rem;
+            color: #374151;
+            margin-bottom: 20px;
+        }
+
+        .about-quote {
+            background: #FFFFFF;
+            padding: 24px;
+            border-radius: 12px;
+            border-left: 4px solid var(--accent-primary);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+            font-weight: 500;
+            color: var(--text-dark);
+            margin-top: 28px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+
+        .stat-card {
+            background: #FFFFFF;
+            padding: 32px 24px;
+            border-radius: 14px;
+            border: 1px solid #E5E7EB;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-cyan));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 15px 30px rgba(17, 24, 39, 0.08);
+            border-color: rgba(37, 99, 235, 0.3);
+        }
+
+        .stat-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .stat-number {
+            font-family: var(--font-heading);
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            margin-bottom: 8px;
+        }
+
+        .stat-desc {
+            font-size: 0.95rem;
+            color: #4B5563;
+            font-weight: 500;
+        }
+
+        /* Розділ "Послуги" (Services Menu Preview) */
+        .services {
+            padding: 100px 0;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+        }
+
+        .services .section-title {
+            color: var(--text-light);
+        }
+
+        .services-subtitle {
+            color: var(--text-muted);
+            max-width: 650px;
+            font-size: 1.1rem;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 28px;
+        }
+
+        .service-card {
+            background-color: var(--bg-dark-card);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 36px;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .service-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--accent-cyan);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 25px rgba(56, 189, 248, 0.12);
+        }
+
+        .service-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 24px;
+        }
+
+        .service-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 12px;
+            background: rgba(37, 99, 235, 0.15);
+            border: 1px solid rgba(37, 99, 235, 0.4);
+            display: grid;
+            place-items: center;
+            color: var(--accent-cyan);
+            font-size: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .service-card:hover .service-icon {
+            background: var(--accent-primary);
+            color: #FFFFFF;
+            transform: scale(1.08);
+        }
+
+        .service-badge {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--accent-cyan);
+            background: rgba(56, 189, 248, 0.1);
+            padding: 4px 10px;
+            border-radius: 6px;
+        }
+
+        .service-title {
+            font-size: 1.4rem;
+            margin-bottom: 12px;
+            color: #FFFFFF;
+        }
+
+        .service-desc {
+            color: var(--text-muted);
+            font-size: 0.98rem;
+            margin-bottom: 24px;
+        }
+
+        .service-features {
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 20px;
+            margin-bottom: 24px;
+        }
+
+        .service-features li {
+            font-size: 0.9rem;
+            color: #D1D5DB;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .service-features li::before {
+            content: '→';
+            font-family: var(--font-mono);
+            color: var(--accent-cyan);
+            font-weight: bold;
+        }
+
+        .service-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: var(--accent-cyan);
+            font-weight: 500;
+        }
+
+        .service-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #FFFFFF;
+            font-family: var(--font-body);
+            font-weight: 600;
+        }
+
+        .service-card:hover .service-link {
+            color: var(--accent-cyan);
+            transform: translateX(4px);
+        }
+
+        /* Розділ "Контакти" (Contacts Section) */
+        .contacts {
+            padding: 100px 0;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+        }
+
+        .contacts-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1.1fr;
+            gap: 48px;
+            background: #FFFFFF;
+            border-radius: 20px;
+            padding: 48px;
+            box-shadow: 0 20px 40px rgba(17, 24, 39, 0.06);
+            border: 1px solid #E5E7EB;
+        }
+
+        .contact-info-list {
+            margin-top: 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .contact-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--accent-primary);
+            display: grid;
+            place-items: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .contact-item h4 {
+            font-size: 1.05rem;
+            margin-bottom: 4px;
+            color: var(--text-dark);
+        }
+
+        .contact-item p {
+            color: #4B5563;
+            font-size: 0.95rem;
+        }
+
+        .schedule-badge {
+            display: inline-block;
+            margin-top: 6px;
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            background: #ECFDF5;
+            color: #059669;
+            border: 1px solid #A7F3D0;
+            padding: 3px 10px;
+            border-radius: 6px;
+        }
+
+        /* Форма зворотного зв'язку */
+        .contact-form {
+            background: var(--bg-dark);
+            color: var(--text-light);
+            padding: 40px;
+            border-radius: 16px;
+        }
+
+        .contact-form h3 {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+
+        .contact-form p {
+            color: var(--text-muted);
+            font-size: 0.92rem;
+            margin-bottom: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #D1D5DB;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            color: #FFFFFF;
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent-cyan);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+        }
+
+        .btn-submit {
+            width: 100%;
+            background-color: var(--accent-primary);
+            color: #FFFFFF;
+            border: none;
+            padding: 16px;
+            border-radius: 8px;
+            font-family: var(--font-body);
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 8px;
+        }
+
+        .btn-submit:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
+        }
+
+        /* Підвал (Footer) */
+        .footer {
+            background-color: var(--bg-dark);
+            color: var(--text-muted);
+            padding: 40px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            font-size: 0.9rem;
+        }
+
+        .footer-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        /* Адаптивність для мобільних пристроїв та планшетів */
+        @media (max-width: 992px) {
+            .hero-grid,
+            .about-grid,
+            .services-grid,
+            .contacts-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            .hero {
+                padding: 140px 0 80px;
+            }
+
+            .contacts-wrapper {
+                padding: 32px 24px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+
+            .nav-links {
+                position: absolute;
+                top: 80px;
+                left: 0;
+                width: 100%;
+                background-color: var(--bg-dark);
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 24px;
+                gap: 20px;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+                transition: clip-path 0.35s ease-in-out;
+            }
+
+            .nav-links.active {
+                clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+            }
+
+            .nav-cta {
+                width: 100%;
+                text-align: center;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-form {
+                padding: 28px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Навігаційна панель -->
+    <header class="navbar">
+        <div class="container nav-container">
+            <a href="#hero" class="logo">
+                <div class="logo-icon">FL</div>
+                Flow<span>Logic</span>
+            </a>
+            
+            <button class="menu-toggle" id="menuToggle" aria-label="Меню">
+                ☰
+            </button>
+
+            <nav class="nav-links" id="navLinks">
+                <a href="#about">Про нас</a>
+                <a href="#services">Рішення та послуги</a>
+                <a href="#contacts">Контакти</a>
+                <a href="#contacts" class="nav-cta">Замовити AI-аудит</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Головний розділ (Hero) -->
+    <section class="hero" id="hero">
+        <div class="container hero-grid">
+            <div class="hero-content">
+                <div class="tech-tag">
+                    <span class="pulse-dot"></span>
+                    AI AUTOMATION & WORKFLOW ARCHITECTURE
+                </div>
+                <h1 class="hero-title">
+                    Звільніть людей для стратегії. <span class="highlight">Рутину віддайте алгоритмам.</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Впроваджуємо автономних AI-агентів та інтелектуальні зв'язки між CRM, ERP і клієнтською підтримкою. Скорочуємо операційні витрати до 42% за перші 60 днів.
+                </p>
+                <div class="hero-actions">
+                    <a href="#contacts" class="btn-primary">
+                        Розрахувати економію для бізнесу
+                        <span>→</span>
+                    </a>
+                    <a href="#services" class="btn-secondary">
+                        Каталог AI-рішень
+                    </a>
+                </div>
+            </div>
+
+            <!-- Візуальний блок з показниками -->
+            <div class="hero-visual">
+                <div class="terminal-header">
+                    <div class="terminal-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                    <span>flowlogic_engine_v3.4 // status: active</span>
+                </div>
+
+                <div class="metric-row">
+                    <div class="metric-label">
+                        <span>Автоматизація обробки лідів (24/7)</span>
+                        <strong>94.8%</strong>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 94.8%;"></div>
+                    </div>
+                </div>
+
+                <div class="metric-row">
+                    <div class="metric-label">
+                        <span>Скорочення часу на звітність та документи</span>
+                        <strong>-78% годин</strong>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 78%;"></div>
+                    </div>
+                </div>
+
+                <div class="metric-row">
+                    <div class="metric-label">
+                        <span>Середня окупність впровадження (ROI)</span>
+                        <strong>2.4 міс.</strong>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 86%;"></div>
+                    </div>
+                </div>
+
+                <div class="code-snippet">
+                    > Trigger: New_Order_Received<br>
+                    > AI_Agent: Qualification & Invoice Generation... [OK]<br>
+                    > CRM_Sync: Deal Updated in 0.42s
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Розділ "Про нас" -->
+    <section class="about" id="about">
+        <div class="container">
+            <div class="section-header">
+                <div class="tech-tag dark-tag">// НАША ІСТОРІЯ ТА ФІЛОСОФІЯ</div>
+                <h2 class="section-title">Від боротьби з хаосом у таблицях — до системної AI-інженерії</h2>
+            </div>
+
+            <div class="about-grid">
+                <div class="about-story">
+                    <p>
+                        <strong>FlowLogic</strong> з’явився у 2024 році, коли наша команда системних архітекторів та аналітиків побачила головну проблему українського малого й середнього бізнесу: талановиті команди витрачали до 60% робочого часу на копіювання даних між месенджерами, таблицями та CRM.
+                    </p>
+                    <p>
+                        Ми відмовилися від продажу «модних чат-ботів заради хайпу». Замість цього ми сфокусувалися на прагматичній інженерії: будуємо надійні конвеєри даних, де штучний інтелект приймає рішення, класифікує запити клієнтів, виставляє рахунки та оновлює бази без участі людини.
+                    </p>
+                    <div class="about-quote">
+                        «Наша мета — не замінити вашу команду, а дати кожному співробітнику цифрового асистента, який працює зі швидкістю світла та без вихідних».
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">85+</div>
+                        <div class="stat-desc">Впроваджених AI-систем та бізнес-воркфлоу по всій Україні</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">14 000+</div>
+                        <div class="stat-desc">Годин рутинної праці заощаджено нашим клієнтам щомісяця</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">99.9%</div>
+                        <div class="stat-desc">Стабільність роботи хмарних інтеграцій та API-шлюзів</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">3.2x</div>
+                        <div class="stat-desc">Середнє прискорення реакції відділу продажів на нову заявку</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Розділ "Послуги" (Меню рішень) -->
+    <section class="services" id="services">
+        <div class="container">
+            <div class="section-header">
+                <div class="tech-tag">
+                    <span class="pulse-dot"></span>
+                    МЕНЮ ФІРМОВИХ РІШЕНЬ
+                </div>
+                <h2 class="section-title">Архітектура автоматизації під ключ</h2>
+                <p class="services-subtitle">
+                    Чотири ключові модулі, які можна інтегрувати окремо або об'єднати в єдину автономну екосистему вашої компанії.
+                </p>
+            </div>
+
+            <div class="services-grid">
+                <!-- Послуга 1 -->
+                <div class="service-card">
+                    <div>
+                        <div class="service-top">
+                            <div class="service-icon">🤖</div>
+                            <span class="service-badge">CORE MODULE // 01</span>
+                        </div>
+                        <h3 class="service-title">AI-Агенти продажу та підтримки 24/7</h3>
+                        <p class="service-desc">
+                            Розумні асистенти на базі кастомних LLM, навчені на базі знань і регламентах вашої компанії. Спілкуються природною мовою у Telegram, Instagram, Viber та на сайті.
+                        </p>
+                        <ul class="service-features">
+                            <li>Миттєва кваліфікація ліда та виявлення потреб за 5 секунд</li>
+                            <li>Перевірка наявності товару/слотів у реальному часі</li>
+                            <li>Автоматичне створення угоди та резюме діалогу в CRM</li>
+                        </ul>
+                    </div>
+                    <div class="service-footer">
+                        <span>Термін запуску: 10–14 днів</span>
+                        <a href="#contacts" class="service-link">Детальніше →</a>
+                    </div>
+                </div>
+
+                <!-- Послуга 2 -->
+                <div class="service-card">
+                    <div>
+                        <div class="service-top">
+                            <div class="service-icon">⚡</div>
+                            <span class="service-badge">SYNC ENGINE // 02</span>
+                        </div>
+                        <h3 class="service-title">Наскрізна синхронізація CRM, ERP та обліку</h3>
+                        <p class="service-desc">
+                            Ліквідація ручного перенесення даних. Поєднуємо KeyCRM, HubSpot, Pipedrive, 1С/BAS, Нову Пошту, платіжні шлюзи та телефонію в єдиний механізм.
+                        </p>
+                        <ul class="service-features">
+                            <li>Автоматична генерація ТТН, договорів та рахунків-фактур</li>
+                            <li>Сповіщення команди про критичні статуси та прострочені дедлайни</li>
+                            <li>Повна відсутність людського фактора та втрачених заявок</li>
+                        </ul>
+                    </div>
+                    <div class="service-footer">
+                        <span>Термін запуску: 7–12 днів</span>
+                        <a href="#contacts" class="service-link">Детальніше →</a>
+                    </div>
+                </div>
+
+                <!-- Послуга 3 -->
+                <div class="service-card">
+                    <div>
+                        <div class="service-top">
+                            <div class="service-icon">📊</div>
+                            <span class="service-badge">DATA & DOCS // 03</span>
+                        </div>
+                        <h3 class="service-title">Інтелектуальний документообіг та AI-аналітика</h3>
+                        <p class="service-desc">
+                            Автоматичне зчитування накладних, PDF-документів, чеків та голосових дзвінків менеджерів із перетворенням у структуровані дашборди для власника.
+                        </p>
+                        <ul class="service-features">
+                            <li>AI-контроль якості дзвінків відділу продажу з оцінкою за чек-листом</li>
+                            <li>Автоматичне розпізнавання первинної документації (OCR + AI)</li>
+                            <li>Щоранковий фінансовий звіт керівнику прямо в Telegram</li>
+                        </ul>
+                    </div>
+                    <div class="service-footer">
+                        <span>Термін запуску: 14–21 день</span>
+                        <a href="#contacts" class="service-link">Детальніше →</a>
+                    </div>
+                </div>
+
+                <!-- Послуга 4 -->
+                <div class="service-card">
+                    <div>
+                        <div class="service-top">
+                            <div class="service-icon">🎯</div>
+                            <span class="service-badge">OUTBOUND AI // 04</span>
+                        </div>
+                        <h3 class="service-title">Автоматизовані B2B-воронки та Лідогенерація</h3>
+                        <p class="service-desc">
+                            Системи розумного пошуку корпоративних клієнтів, аналізу їхніх профілів та гіперперсоналізованого першого контакту без спаму.
+                        </p>
+                        <ul class="service-features">
+                            <li>Парсинг та збагачення бази цільових ЛПР (осіб, що приймають рішення)</li>
+                            <li>Генерація індивідуальних комерційних пропозицій під біль клієнта</li>
+                            <li>Автоматичний пул-ап (follow-up) до моменту отримання відповіді</li>
+                        </ul>
+                    </div>
+                    <div class="service-footer">
+                        <span>Термін запуску: 10–15 днів</span>
+                        <a href="#contacts" class="service-link">Детальніше →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Розділ "Контакти" -->
+    <section class="contacts" id="contacts">
+        <div class="container">
+            <div class="contacts-wrapper">
+                <!-- Ліва колонка: Контактні дані, графік, локація -->
+                <div>
+                    <div class="tech-tag dark-tag">// ЗВ'ЯЗОК З ІНЖЕНЕРНОЮ КОМАНДОЮ</div>
+                    <h2 class="section-title">Готові оцифрувати процеси?</h2>
+                    <p style="color: #4B5563;">
+                        Завітайте до нашого офісу або залиште заявку на безкоштовну 30-хвилинну сесію розбору ваших бізнес-процесів.
+                    </p>
+
+                    <div class="contact-info-list">
+                        <div class="contact-item">
+                            <div class="contact-icon">📍</div>
+                            <div>
+                                <h4>Місце розташування</h4>
+                                <p>м. Київ, вул. Дорогожицька, 3 (Інноваційний парк UNIT.City, корпус B12, 4 поверх)</p>
+                                <p style="font-size: 0.85rem; color: #6B7280; margin-top: 4px;">Працюємо з компаніями по всій Україні та ЄС онлайн</p>
+                            </div>
+                        </div>
+
+                        <div class="contact-item">
+                            <div class="contact-icon">🕒</div>
+                            <div>
+                                <h4>Графік роботи</h4>
+                                <p><strong>Пн – Пт:</strong> 09:00 – 19:00</p>
+                                <p><strong>Сб:</strong> 10:00 – 15:00 (чергові інженери підтримки)</p>
+                                <p><strong>Нд:</strong> Вихідний</p>
+                                <span class="schedule-badge">● AI-моніторинг систем клієнтів працює 24/7/365</span>
+                            </div>
+                        </div>
+
+                        <div class="contact-item">
+                            <div class="contact-icon">💬</div>
+                            <div>
+                                <h4>Прямі контакти</h4>
+                                <p><strong>Телефон:</strong> +38 (044) 334-89-12</p>
+                                <p><strong>Email:</strong> hello@flowlogic.ua</p>
+                                <p><strong>Telegram-бот аудиту:</strong> @FlowLogic_AI_bot</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Права колонка: Форма заявки -->
+                <div class="contact-form">
+                    <h3>Замовити розрахунок ROI</h3>
+                    <p>Опишіть, який процес забирає найбільше часу, і ми підготуємо схему його автоматизації.</p>
+
+                    <form onsubmit="event.preventDefault(); alert('Дякуємо! Ваша заявка прийнята в систему FlowLogic. Наш AI-архітектор зв\'яжеться з вами найближчим часом.');">
+                        <div class="form-group">
+                            <label for="name">Ваше ім'я та посада</label>
+                            <input type="text" id="name" class="form-control" placeholder="Олександр, CEO / Операційний директор" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="contact">Телефон або нік у Telegram</label>
+                            <input type="text" id="contact" class="form-control" placeholder="+380 (__) ___-__-__ або @username" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="service">Який напрямок цікавить найбільше?</label>
+                            <select id="service" class="form-control">
+                                <option value="agents" style="color:#111827;">AI-Агенти продажу та підтримки</option>
+                                <option value="crm" style="color:#111827;">Синхронізація CRM / ERP / Обліку</option>
+                                <option value="docs" style="color:#111827;">Аналітика дзвінків та документообіг</option>
+                                <option value="audit" style="color:#111827;">Комплексний аудит усіх процесів</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="message">Коротко про ваше завдання (необов'язково)</label>
+                            <textarea id="message" rows="3" class="form-control" placeholder="Наприклад: хочемо автоматизувати обробку лідів з Instagram та виставлення рахунків у KeyCRM..."></textarea>
+                        </div>
+
+                        <button type="submit" class="btn-submit">Отримати план автоматизації →</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Футер -->
+    <footer class="footer">
+        <div class="container footer-flex">
+            <div class="logo">
+                <div class="logo-icon">FL</div>
+                Flow<span>Logic</span>
+            </div>
+            <div>
+                © 2026 FlowLogic Systems Ukraine. Усі права захищено.
+            </div>
+            <div style="font-family: var(--font-mono); color: var(--accent-cyan); font-size: 0.8rem;">
+                [SYSTEM STATUS: 100% OPERATIONAL]
+            </div>
+        </div>
+    </footer>
+
+    <!-- Скрипт для мобільного меню та плавного закриття при кліку -->
+    <script>
+        const menuToggle = document.getElementById('menuToggle');
+        const navLinks = document.getElementById('navLinks');
+        const links = navLinks.querySelectorAll('a');
+
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            menuToggle.textContent = navLinks.classList.contains('active') ? '✕' : '☰';
+        });
+
+        links.forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+                menuToggle.textContent = '☰';
+            });
+        });
+    </script>
+</body>
+</html>
