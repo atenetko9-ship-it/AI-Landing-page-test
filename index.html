@@ -879,28 +879,93 @@
         }
 
         .service-icon-box {
-            width: 54px;
-            height: 54px;
-            border-radius: var(--radius-md);
-            background: rgba(59, 130, 246, 0.12);
-            border: 1px solid rgba(59, 130, 246, 0.3);
+            width: 64px;
+            height: 64px;
+            border-radius: 18px;
+            background: linear-gradient(145deg, #438eff, #2e72ed);
+            border: 1px solid rgba(147, 197, 253, 0.28);
             display: grid;
             place-items: center;
-            color: var(--accent-cyan);
-            transition: var(--transition-smooth);
+            color: #FFFFFF;
+            position: relative;
+            isolation: isolate;
+            overflow: hidden;
+            flex-shrink: 0;
+            box-shadow: 0 8px 24px rgba(37, 99, 235, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .service-card:hover .service-icon-box {
-            background: var(--accent-blue);
-            color: #FFFFFF;
-            transform: scale(1.08);
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+        .service-icon-box::after {
+            content: '';
+            position: absolute;
+            inset: -50%;
+            background: linear-gradient(110deg, transparent 40%, rgba(255, 255, 255, 0.3) 50%, transparent 60%);
+            transform: translateX(-100%);
+            pointer-events: none;
         }
 
         .service-icon-box svg {
-            width: 26px;
-            height: 26px;
+            width: 32px;
+            height: 32px;
             stroke-width: 1.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            transform-origin: center;
+        }
+
+        .service-card:focus-within .service-icon-box {
+            transform: translateY(-3px) rotate(-4deg);
+            box-shadow: 0 12px 32px rgba(37, 99, 235, 0.48), 0 0 24px rgba(59, 130, 246, 0.22);
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+            .service-card:hover .service-icon-box {
+                transform: translateY(-3px) rotate(-4deg);
+                box-shadow: 0 12px 32px rgba(37, 99, 235, 0.48), 0 0 24px rgba(59, 130, 246, 0.22);
+            }
+            .service-card:hover .service-icon-box::after { animation: icon-shine 0.7s ease-out both; }
+            .service-card:hover .service-icon-box svg { animation: icon-pop 0.65s ease both; }
+            .service-card:nth-child(2):hover .service-icon-box svg { animation-name: icon-zap; }
+            .service-card:nth-child(3):hover .service-icon-box svg { animation-name: icon-document; }
+            .service-card:nth-child(4):hover .service-icon-box svg { animation-name: icon-turn; }
+        }
+
+        .service-card:focus-within .service-icon-box::after { animation: icon-shine 0.7s ease-out both; }
+        .service-card:focus-within .service-icon-box svg { animation: icon-pop 0.65s ease both; }
+        .service-card:nth-child(2):focus-within .service-icon-box svg { animation-name: icon-zap; }
+        .service-card:nth-child(3):focus-within .service-icon-box svg { animation-name: icon-document; }
+        .service-card:nth-child(4):focus-within .service-icon-box svg { animation-name: icon-turn; }
+
+        @keyframes icon-shine { to { transform: translateX(100%); } }
+        @keyframes icon-pop {
+            0%, 100% { transform: translateY(0) scale(1); }
+            40% { transform: translateY(-4px) scale(1.12); }
+            70% { transform: translateY(1px) scale(0.97); }
+        }
+        @keyframes icon-zap {
+            0%, 100% { transform: rotate(0) scale(1); }
+            25% { transform: rotate(-12deg) scale(1.1); }
+            50% { transform: rotate(10deg) scale(1.14); }
+            75% { transform: rotate(-5deg) scale(1.05); }
+        }
+        @keyframes icon-document {
+            0%, 100% { transform: translateY(0); }
+            35% { transform: translateY(-5px); }
+            65% { transform: translateY(2px); }
+        }
+        @keyframes icon-turn {
+            from { transform: rotate(-90deg) scale(0.85); }
+            to { transform: rotate(0) scale(1); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .service-card .service-icon-box,
+            .service-card .service-icon-box svg,
+            .service-card .service-icon-box::after {
+                animation: none !important;
+                transition: none !important;
+                transform: none !important;
+            }
+            .service-card .service-icon-box::after { display: none; }
         }
 
         .service-id-tag {
@@ -1584,7 +1649,7 @@
                         <div class="service-card-top">
                             <div class="service-header-row">
                                 <div class="service-icon-box">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2a8 8 0 0 0-8 8c0 4.418 8 12 8 12s8-7.582 8-12a8 8 0 0 0-8-8z"/><circle cx="12" cy="10" r="3"/></svg>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true" focusable="false"><path d="M12 2a8 8 0 0 0-8 8c0 4.418 8 12 8 12s8-7.582 8-12a8 8 0 0 0-8-8z"/><circle cx="12" cy="10" r="3"/></svg>
                                 </div>
                                 <span class="service-id-tag">CORE // 01</span>
                             </div>
@@ -1609,7 +1674,7 @@
                         <div class="service-card-top">
                             <div class="service-header-row">
                                 <div class="service-icon-box">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true" focusable="false"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
                                 </div>
                                 <span class="service-id-tag">SYNC // 02</span>
                             </div>
@@ -1634,7 +1699,7 @@
                         <div class="service-card-top">
                             <div class="service-header-row">
                                 <div class="service-icon-box">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true" focusable="false"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
                                 </div>
                                 <span class="service-id-tag">DOCS // 03</span>
                             </div>
@@ -1659,7 +1724,7 @@
                         <div class="service-card-top">
                             <div class="service-header-row">
                                 <div class="service-icon-box">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/></svg>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/></svg>
                                 </div>
                                 <span class="service-id-tag">OUTBOUND // 04</span>
                             </div>
